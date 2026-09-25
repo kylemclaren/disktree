@@ -1,6 +1,10 @@
 # disktree
 
-![disktree: a home directory as a treemap, coloured by kind of data, with reclaimable space hatched and the selection, findings and free space in the side panel](assets/screenshot.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/screenshot-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/screenshot-light.png">
+  <img alt="disktree: a home directory as a treemap, coloured by kind of data, with reclaimable space hatched and the selection, findings and free space in the side panel" src="assets/screenshot-dark.png">
+</picture>
 
 Find what is filling a disk, mark what should go, and hand the list to
 Finder or Terminal — with the volume's free space in view the whole time.

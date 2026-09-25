@@ -147,5 +147,8 @@ that would need them.
   window nobody sees gets: Liquid Glass exists only on screen, and shown
   off screen it blanks the window. So is a scroll view that reaches up
   behind the toolbar — keep the panel's clear of it off screen. What a
-  person sees on macOS 26 is only checked by a capture of the real window;
-  never regenerate `assets/screenshot.png` from `--snapshot`.
+  person sees on macOS 26 is only checked by a capture of the real window.
+  The README's `assets/screenshot-dark.png` and `screenshot-light.png` are
+  `--snapshot` renders all the same, by the owner's choice: regenerate both
+  together, over a made-up home folder (sparse files, `-a`, `HOME` pointed
+  at it), never over a real one, and know they show the plain surfaces.
