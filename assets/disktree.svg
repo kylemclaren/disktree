@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- disktree's mark: a treemap, with the band a directory keeps for its name.
+     In the app's palette (MP300, by Alex Cristache): a body rising from
+     Indigo Blue into a violet and a periwinkle glow, the upper half of the
+     dark card; the scanned root a Midnight well under a Pear Spritz name;
+     an Indigo Blue directory under a Sweet Escape band, a deep turquoise one
+     under a Fresh Turquoise band, and a Pear Spritz file. The body starts at
+     Indigo, not Midnight, so the mark keeps its outline on a dark ground.
+     LogoInk.icon and scripts/make-icon.swift draw the same colours. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a18b1"/>
+      <stop offset="0.75" stop-color="#6137d9"/>
+      <stop offset="1" stop-color="#6873e7"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="url(#dusk)"/>
+  <rect x="5" y="5" width="54" height="54" fill="#020035"/>
+  <rect x="5" y="5" width="54" height="9" fill="#cbf85f"/>
+  <rect x="8" y="17" width="30" height="39" fill="#3a18b1"/>
+  <rect x="8" y="17" width="30" height="7" fill="#8844ff"/>
+  <rect x="41" y="17" width="15" height="24" fill="#107066"/>
+  <rect x="41" y="17" width="15" height="6" fill="#40e0d0"/>
+  <rect x="41" y="44" width="15" height="12" fill="#cbf85f"/>
+</svg>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  What disktree.app is signed with (scripts/bundle.sh).
+
+  Not sandboxed, and it cannot be: a sandboxed app reads only what the user
+  hands it through an open panel, and disktree's work is to measure a whole
+  volume, wherever its files are, and hand the marked paths to Finder or to
+  a copied command; it never deletes anything itself. Written down rather
+  than left out, so the choice is visible where signing reads it.
+
+  Nothing else: it needs none of the hardened runtime's exceptions (no JIT,
+  no unsigned libraries, no DYLD_ variables), so a Developer ID signature
+  with the runtime on needs no change here.
+-->
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+</dict>
+</plist>

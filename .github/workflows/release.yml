@@ -1,0 +1,92 @@
+name: Release
+
+# Push a tag like v0.9.1 to build and publish a release. The tag must match
+# the version in VERSION.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to (re)build, e.g. v0.9.1"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  # The same Xcode as CI, so a release is built by the compiler the gate
+  # passed with.
+  XCODE_VERSION: "26.5"
+
+jobs:
+  release:
+    name: Build and publish
+    # Where it runs is decided by the deployment target (macOS 15, in
+    # Package.swift and Info.plist), not by the runner, so the runner is
+    # simply the one with the pinned Xcode.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Version
+        id: version
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          version=$(cat VERSION)
+          if [ "$TAG" != "v$version" ]; then
+            echo "tag $TAG does not match VERSION $version" >&2
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Xcode
+        run: |
+          sudo xcode-select --switch "/Applications/Xcode_${XCODE_VERSION}.app"
+          swift --version
+
+      - name: Test
+        run: make test
+
+      # Both architectures in one binary, so the one download runs on Apple
+      # silicon and on the Intel Macs macOS 15 still supports.
+      - name: Build
+        run: |
+          make build ARCHS="arm64 x86_64"
+          lipo build/disktree.app/Contents/MacOS/disktree \
+            -verify_arch arm64 x86_64
+          codesign --verify --deep --strict build/disktree.app
+
+      # ditto, with no resource forks or extended attributes: the signature
+      # needs none, and any it carried would come out of `unzip` as `._`
+      # files inside the bundle, which break its seal. Then the archive is
+      # unpacked and checked the way a download will be.
+      - name: Package
+        id: package
+        run: |
+          name="disktree-${{ steps.version.outputs.version }}-macos-universal"
+          mkdir -p dist
+          ditto -c -k --norsrc --noextattr --noacl --keepParent \
+            build/disktree.app "dist/$name.zip"
+          mkdir -p check
+          unzip -q "dist/$name.zip" -d check
+          codesign --verify --deep --strict check/disktree.app
+          (cd dist && shasum -a 256 "$name.zip" > "$name.zip.sha256")
+          echo "archive=dist/$name.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ARCHIVE" "$ARCHIVE.sha256" --clobber
+          else
+            gh release create "$TAG" "$ARCHIVE" "$ARCHIVE.sha256" \
+              --title "disktree ${TAG#v}" --generate-notes
+          fi

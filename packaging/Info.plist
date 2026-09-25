@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  disktree.app's Info.plist. scripts/bundle.sh renders it into the bundle
+  with the version from VERSION in place of @VERSION@.
+-->
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>io.github.kylemclaren.disktree</string>
+	<key>CFBundleName</key>
+	<string>disktree</string>
+	<key>CFBundleDisplayName</key>
+	<string>disktree</string>
+	<key>CFBundleExecutable</key>
+	<string>disktree</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@VERSION@</string>
+	<!-- One number for both: there is no build number apart from the release. -->
+	<key>CFBundleVersion</key>
+	<string>@VERSION@</string>
+	<key>CFBundleIconFile</key>
+	<string>disktree</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Tobi Lütke. MIT License.</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<!-- The package's deployment target: Package.swift says macOS 15. -->
+	<key>LSMinimumSystemVersion</key>
+	<string>15.0</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<!--
+	  Registered for folders, so one dropped on the Dock icon or on the app
+	  in Finder is scanned. Alternate adds a handler; it never makes disktree
+	  the default for opening a folder, which stays Finder's. public.folder
+	  covers volumes too; public.directory would also take packages such as
+	  apps, which should keep opening as they do.
+	-->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Folder</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.folder</string>
+			</array>
+		</dict>
+	</array>
+	<!--
+	  What macOS shows when a scan first reaches a protected place. Scanning
+	  the home directory reads Desktop, Documents and Downloads, so without
+	  these the prompts would ask with no reason given. Full Disk Access
+	  covers all of them at once; the app offers it when a scan is refused.
+	-->
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>disktree measures what is in your Desktop folder to show what is using the disk. It never deletes anything itself.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>disktree measures what is in your Documents folder to show what is using the disk. It never deletes anything itself.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>disktree measures what is in your Downloads folder to show what is using the disk. It never deletes anything itself.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>disktree measures what is on this volume to show what is using it. It never deletes anything itself.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>disktree measures what is on this network volume to show what is using it. It never deletes anything itself.</string>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>disktree measures files kept by iCloud Drive and other sync services to show what is using the disk. It never deletes anything itself.</string>
+</dict>
+</plist>

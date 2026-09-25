@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned: the gate builds with every warning an error and lints with
+  # swift format --strict, so a newer Swift's new warnings and format rules
+  # are a change to make on purpose, not by surprise. Xcode 26.5 is Swift 6.3.
+  XCODE_VERSION: "26.5"
+
+jobs:
+  check:
+    name: Lint and test
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+
+      # The runner carries several Xcodes and its default moves with image
+      # updates; name the one the gate was written against.
+      - name: Xcode
+        run: |
+          sudo xcode-select --switch "/Applications/Xcode_${XCODE_VERSION}.app"
+          swift --version
+
+      - name: Lint
+        run: make lint
+
+      - name: Test
+        run: make test
+
+      # The bundle, signed and checked, so a packaging mistake shows up here
+      # and not at release time.
+      - name: Bundle
+        run: |
+          make build
+          codesign --verify --deep --strict build/disktree.app
