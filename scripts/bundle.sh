@@ -10,6 +10,7 @@
 #
 #   Contents/MacOS/disktree            BINARY
 #   Contents/Resources/disktree.icns   assets/disktree.icns
+#   Contents/Resources/disktree        packaging/launcher.sh, for PATH
 #   Contents/Info.plist                packaging/Info.plist, with VERSION
 #
 # SIGN_IDENTITY picks the signature: ad-hoc ("-") unless it names a
@@ -58,6 +59,10 @@ cp "$binary" "$app/Contents/MacOS/disktree"
 chmod 755 "$app/Contents/MacOS/disktree"
 cp "$here/assets/disktree.icns" "$app/Contents/Resources/disktree.icns"
 chmod 644 "$app/Contents/Resources/disktree.icns"
+# What a package manager links onto PATH: a launcher that finds the bundle
+# through the link, where a link to the binary itself would lose it.
+cp "$here/packaging/launcher.sh" "$app/Contents/Resources/disktree"
+chmod 755 "$app/Contents/Resources/disktree"
 sed "s/@VERSION@/$version/g" "$here/packaging/Info.plist" \
     > "$app/Contents/Info.plist"
 plutil -lint -s "$app/Contents/Info.plist"

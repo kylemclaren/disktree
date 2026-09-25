@@ -26,12 +26,23 @@ palette.
 
 ## Install
 
-Download `disktree-*-macos-universal.zip` from the
+With [Homebrew](https://brew.sh):
+
+```sh
+brew install --cask kylemclaren/tap/disktree
+xattr -dr com.apple.quarantine /Applications/disktree.app
+```
+
+That puts `disktree.app` in Applications and a `disktree` command on your
+`PATH`. Releases are signed ad hoc, not notarized, and Homebrew no longer
+lifts the quarantine for you, hence the second line.
+
+Or download `disktree-*-macos-universal.zip` from the
 [latest release](https://github.com/kylemclaren/disktree/releases/latest),
-unzip it and move `disktree.app` to Applications. Releases are signed ad hoc, not
-notarized: the first time, open it, dismiss the warning, then click **Open
-Anyway** in System Settings › Privacy & Security; or run `xattr -dr
-com.apple.quarantine disktree.app` before opening it. Or build it:
+unzip it and move `disktree.app` to Applications. The first time, open it,
+dismiss the warning, then click **Open Anyway** in System Settings › Privacy &
+Security; or run `xattr -dr com.apple.quarantine disktree.app` before opening
+it. Or build it:
 
 ```sh
 git clone https://github.com/kylemclaren/disktree
