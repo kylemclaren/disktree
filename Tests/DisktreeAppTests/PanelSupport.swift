@@ -577,3 +577,32 @@ private struct InspectorHost: View {
             }
     }
 }
+
+/// Scroll bars that float over the content, as they do on any Mac with a
+/// trackpad, whatever machine the tests run on.
+///
+/// With no trackpad attached — a CI runner — macOS shows legacy scroll bars
+/// that take their width from the content, so a column that scrolls is a
+/// scroller narrower than one that does not. That is right for the app;
+/// a test comparing the two is about the column, not the scroller. Set in
+/// the argument domain, which outranks the person's own setting and is
+/// never written anywhere. `DISKTREE_TEST_SCROLLERS` overrides it, to see
+/// the legacy case on purpose.
+enum OverlayScrollers {
+    static let key = "AppleShowScrollBars"
+
+    static func pin() {
+        let style =
+            ProcessInfo.processInfo.environment["DISKTREE_TEST_SCROLLERS"]
+            ?? "WhenScrolling"
+        var arguments =
+            UserDefaults.standard.volatileDomain(
+                forName: UserDefaults.argumentDomain
+            )
+        arguments[key] = style
+        UserDefaults.standard.setVolatileDomain(
+            arguments,
+            forName: UserDefaults.argumentDomain
+        )
+    }
+}

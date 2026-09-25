@@ -257,6 +257,7 @@ enum PanelScene: String, CaseIterable, Sendable {
         // the disk rather than cut through by a scroll area of its own.
         let fixture = try PanelHarness.fixture()
         defer { fixture.remove() }
+        OverlayScrollers.pin()
         let state = try PanelHarness.state(fixture)
         try PanelScene.manyMarks.apply(to: state, fixture: fixture)
         let rem = state.rem
