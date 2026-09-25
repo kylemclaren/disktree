@@ -249,6 +249,10 @@ enum PanelScene: String, CaseIterable, Sendable {
         }
     }
 
+    /// A legacy scroll bar at 2x, in pixels: what a column that scrolls
+    /// may lose to one.
+    static let legacyScroller = 32
+
     @Test func theColumnScrollsWhileTheDiskStaysPut() throws {
         // The same panel in a tall window and in one that leaves the lists
         // a few lines: the column starts at its top, so the selection is
@@ -297,7 +301,20 @@ enum PanelScene: String, CaseIterable, Sendable {
         )
 
         let top = 0...(padding + selection)
-        #expect(tall.profile(rows: top) == short.profile(rows: top))
+        // The same rows, top to bottom: the column starts at its top in
+        // both. Each row as wide, but for a scroller: with no trackpad
+        // attached (a CI runner) the scroll bars are legacy ones, which take
+        // their width from the column that scrolls, and a process that has
+        // already made a scroll view does not read `OverlayScrollers` again.
+        let tallTop = tall.profile(rows: top)
+        let shortTop = short.profile(rows: top)
+        #expect(tallTop.map { $0 > 0 } == shortTop.map { $0 > 0 })
+        #expect(
+            zip(tallTop, shortTop).allSatisfy { tall, short in
+                short <= tall && tall - short <= Self.legacyScroller
+            },
+            "\(tallTop) against \(shortTop)"
+        )
         let bottom = { (rendered: PanelHarness.Rendered, points: Double) in
             rendered.profile(rows: (points - padding - disk)...points)
         }
